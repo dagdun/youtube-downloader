@@ -1,7 +1,7 @@
 <?php
 
-$data = file_get_contents('https://www.youtube.com/get_video_info?el=info&sts=17316&video_id='.$_GET['v']);
-
+$data = file_get_contents('https://www.youtube.com/get_video_info?el=vivo&sts=17316&video_id='.$_GET['v']);
+// echo $data;
 $arr = parseStr($data);
 function parseStr($data) {
 	$datas = explode('&', $data);
@@ -39,29 +39,33 @@ if (isset($arr['storyboard_spec'])) {
 }
 
 if (isset($arr['dashmpd'])) {
-	$dashmpd = file_get_contents($arr['dashmpd']);
-	$xml = new SimpleXMLElement($dashmpd);
-	$json = json_decode( json_encode($xml), true);
-	foreach ($json['Period']['AdaptationSet'] as $row) {
-		echo '<h3>'.$row['@attributes']['mimeType'].'(only)</h3>';
-		usort($row['Representation'], function($a, $b) {
-			if (isset($a['@attributes']['height']))
-				return $a['@attributes']['height'] < $b['@attributes']['height'];
-			return $a['@attributes']['codecs'];
-		});
-		foreach ($row['Representation'] as $item) {
-			$attr = $item['@attributes'];
-			echo '<a href="'.$item['BaseURL'].'" target="blank">';
 
-			if (isset($attr['codecs']))
-				echo 'codecs: '.$attr['codecs'].',';
-			if (isset($attr['audioSamplingRate']))
-				echo 'sample: '.$attr['audioSamplingRate'].',';
-			if (isset($attr['frameRate']))
-				echo 'frame rate: '.$attr['frameRate'].',';
-			if (isset($attr['height']))
-				echo 'res: '.$attr['height'].'p';
-			echo '</a><br>';
+	$dashmpd = @file_get_contents($arr['dashmpd']);
+
+	if ($dashmpd) {
+		$xml = new SimpleXMLElement($dashmpd);
+		$json = json_decode( json_encode($xml), true);
+		foreach ($json['Period']['AdaptationSet'] as $row) {
+			echo '<h3>'.$row['@attributes']['mimeType'].'(only)</h3>';
+			usort($row['Representation'], function($a, $b) {
+				if (isset($a['@attributes']['height']))
+					return $a['@attributes']['height'] < $b['@attributes']['height'];
+				return $a['@attributes']['codecs'];
+			});
+			foreach ($row['Representation'] as $item) {
+				$attr = $item['@attributes'];
+				echo '<a href="'.$item['BaseURL'].'" target="blank">';
+
+				if (isset($attr['codecs']))
+					echo 'codecs: '.$attr['codecs'].',';
+				if (isset($attr['audioSamplingRate']))
+					echo 'sample: '.$attr['audioSamplingRate'].',';
+				if (isset($attr['frameRate']))
+					echo 'frame rate: '.$attr['frameRate'].',';
+				if (isset($attr['height']))
+					echo 'res: '.$attr['height'].'p';
+				echo '</a><br>';
+			}
 		}
 	}
 }
@@ -70,6 +74,6 @@ if (isset($arr['url_encoded_fmt_stream_map']) && isset($arr['url_encoded_fmt_str
 	echo '<h3>mix</h3>';
 	foreach ($arr['url_encoded_fmt_stream_map'] as $mix) {
 		parse_str($mix, $m);
-		echo '<a href="'.$m['url'].'" target="blank">'.$m['type'].','.$m['quality'].'</a><br>';
+		echo '<a href="download.php?name='.urlencode($arr['title']).'&url='.urlencode($m['url']).'" target="blank">'.$m['type'].','.$m['quality'].'</a><br>';
 	}
 }

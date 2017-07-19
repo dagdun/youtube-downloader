@@ -22,5 +22,5 @@ http://YOUR_URL/PATH/TO/FILE/index.php?v=YOUTUBE_ID
 8. click OK
 9. click open and wait
 
-![](https://raw.githubusercontent.com/dagdun/youtube-downloader/master/1.png)
-![](https://raw.githubusercontent.com/dagdun/youtube-downloader/master/2.png)
+![](https://raw.githubusercontent.com/dagdun/youtube-downloader/master/screenshot/1.png)
+![](https://raw.githubusercontent.com/dagdun/youtube-downloader/master/screenshot/2.png)

@@ -74,6 +74,6 @@ if (isset($arr['url_encoded_fmt_stream_map']) && isset($arr['url_encoded_fmt_str
 	echo '<h3>mix</h3>';
 	foreach ($arr['url_encoded_fmt_stream_map'] as $mix) {
 		parse_str($mix, $m);
-		echo '<a href="download.php?name='.urlencode($arr['title']).'&url='.urlencode($m['url']).'" target="blank">'.$m['type'].','.$m['quality'].'</a><br>';
+		echo '<a href="'.$m['url'].'" target="blank">'.$m['type'].','.$m['quality'].'</a><br>';
 	}
 }
